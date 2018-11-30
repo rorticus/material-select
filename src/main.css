@@ -1,3 +1,10 @@
 /* Put your styles and imports here */
 body {
 }
+
+.flexRow {
+	margin: 1em;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
