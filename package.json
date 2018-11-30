@@ -1,0 +1,17 @@
+{
+  "name": "material-select",
+  "version": "1.0.0",
+  "dependencies": {
+    "@dojo/framework": "4.0.2",
+    "@dojo/widgets": "^4.0.0",
+    "@material/select": "^0.40.1",
+    "cldrjs": "~0.4.6",
+    "tslib": "~1.8.1"
+  },
+  "devDependencies": {
+    "@dojo/cli-build-app": "^4.0.4",
+    "@types/cldrjs": "0.4.20",
+    "intern": "^4.3.3",
+    "typescript": "~2.6.1"
+  }
+}

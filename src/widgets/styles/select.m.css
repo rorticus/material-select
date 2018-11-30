@@ -1,0 +1,70 @@
+@import "./variables.css";
+
+.root {
+	composes: mdc-select from '@material/select/dist/mdc.select.css';
+}
+
+.inputWrapper {
+}
+
+/* custom input styles */
+.trigger {
+}
+
+.label {
+	composes: mdc-floating-label from '@material/select/dist/mdc.select.css';
+	composes: mdc-floating-label--float-above from '@material/select/dist/mdc.select.css';
+}
+
+.trigger i {
+}
+
+.trigger:focus {
+}
+
+.placeholder {
+}
+.required {
+}
+
+.dropdown {
+}
+
+.open {
+}
+
+.open .dropdown {
+}
+
+/* native input styles */
+.input {
+	composes: mdc-select__native-control from '@material/select/dist/mdc.select.css';
+}
+
+.input:focus {
+}
+
+.arrow {
+	composes: mdc-select__dropdown-icon from '@material/select/dist/mdc.select.css';
+}
+
+.input:focus ~ .arrow {
+}
+
+/* State classes */
+.focused {
+}
+.disabled .input,
+.readonly .input {
+}
+
+.invalid .input {
+}
+.invalid .arrow {
+}
+.required {
+}
+.valid .input {
+}
+.valid .arrow {
+}
