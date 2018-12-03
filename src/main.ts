@@ -19,16 +19,21 @@ const options = [
 	{
 		label: 'Broccoli',
 		value: 'broccoli'
+	},
+	{
+		label: 'Cows and Chickens',
+		value: 'cows'
 	}
 ];
 
 class App extends WidgetBase {
 	private _value = '';
 	private _inFocus = false;
+	private _requiredValue = '';
 
 	protected render() {
 		return v('div', [
-			v('div', { classes: 'flexRow'}, [
+			v('div', { classes: 'flexRow' }, [
 				w(Select, {
 					label: 'Food',
 					options,
@@ -46,20 +51,32 @@ class App extends WidgetBase {
 					disabled: true
 				})
 			]),
-			v('div', {classes: 'flexRow'}, [
+			v('div', { classes: 'flexRow' }, [
 				w(Select, {
 					label: 'Blurs',
 					options,
-					onFocus: () => { this._inFocus = true; this.invalidate(); },
-					onBlur: () => { this._inFocus = false; this.invalidate(); }
+					onFocus: () => {
+						this._inFocus = true;
+						this.invalidate();
+					},
+					onBlur: () => {
+						this._inFocus = false;
+						this.invalidate();
+					}
 				}),
-				v('span', {}, [this._inFocus ? "😀" : '☹'])
+				v('span', {}, [this._inFocus ? '😀' : '☹'])
 			]),
-			v('div', {classes: 'flexRow'}, [
+			v('div', { classes: 'flexRow' }, [
 				w(Select, {
 					label: 'Required',
 					options,
-					required: true
+					required: true,
+					value: this._requiredValue,
+					invalid: this._requiredValue === '',
+					onValue: (value: string) => {
+						this._requiredValue = value;
+						this.invalidate();
+					}
 				})
 			])
 		]);

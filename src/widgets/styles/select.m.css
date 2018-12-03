@@ -32,3 +32,9 @@
 .disabled {
 	composes: mdc-select--disabled from '@material/select/dist/mdc.select.css';
 }
+
+.invalid {
+}
+.selectInvalid {
+	composes: mdc-select--invalid from '@material/select/dist/mdc.select.css';
+}

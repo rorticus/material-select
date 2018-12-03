@@ -44,17 +44,17 @@ export interface SelectProperties
 		LabeledProperties,
 		CustomAriaProperties {
 	disabled?: boolean;
-	widgetId?: string;
 	invalid?: boolean;
+	label?: string;
 	name?: string;
+	options?: SelectOption[];
 	readOnly?: boolean;
 	required?: boolean;
-	label?: string;
+	widgetId?: string;
+	value?: string;
 
-	options?: SelectOption[];
 	onBlur?(preventDefault: () => void): void;
 	onFocus?(preventDefault: () => void): void;
-	value?: string;
 	onValue?(value: string): void;
 }
 
@@ -120,7 +120,10 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				'select',
 				{
 					...formatAriaProperties(aria),
-					classes: this.theme(css.input),
+					classes: this.theme([
+						css.input,
+						invalid ? css.selectInvalid : null
+					]),
 					disabled,
 					focus: this.shouldFocus,
 					'aria-invalid': invalid ? 'true' : null,
@@ -173,7 +176,8 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 
 		const rootClasses = [
 			css.root,
-			disabled ? css.disabled : null
+			disabled ? css.disabled : null,
+			invalid ? css.invalid : null
 		];
 
 		const children = [
