@@ -52,8 +52,8 @@ export interface SelectProperties
 	label?: string;
 
 	options?: SelectOption[];
-	onBlur?(): void;
-	onFocus?(): void;
+	onBlur?(preventDefault: () => void): void;
+	onFocus?(preventDefault: () => void): void;
 	value?: string;
 	onValue?(value: string): void;
 }
@@ -78,12 +78,16 @@ export interface SelectProperties
 export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties> {
 	private _baseId = uuid();
 
-	private _onBlur(event: FocusEvent) {
-		this.properties.onBlur && this.properties.onBlur();
+	private _onBlur(event?: Event) {
+		this.properties.onBlur && this.properties.onBlur(() => {
+			event && event.preventDefault();
+		});
 	}
 
-	private _onFocus(event: FocusEvent) {
-		this.properties.onFocus && this.properties.onFocus();
+	private _onFocus(event?: Event) {
+		this.properties.onFocus && this.properties.onFocus(() => {
+			event && event.preventDefault();
+		});
 	}
 
 	// native select events
@@ -93,7 +97,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		const value = (<HTMLInputElement>event.target).value;
 		const option = find(
 			options,
-			(option: any, index: number) => option.value === value
+			(option: SelectOption) => option.value === value
 		);
 		option && onValue && onValue(option.value || '');
 	}
@@ -136,7 +140,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 						disabled: true,
 						selected: true
 					}),
-					...options.map((option, i) =>
+					...options.map((option) =>
 						v(
 							'option',
 							{
