@@ -1,5 +1,6 @@
 import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
 import renderer from '@dojo/framework/widget-core/vdom';
+import Listbox from './widgets/Listbox';
 import Select from './widgets/Select';
 import { v, w } from '@dojo/framework/widget-core/d';
 
@@ -78,7 +79,9 @@ class App extends WidgetBase {
 						this.invalidate();
 					}
 				})
-			])
+			]),
+			w(Listbox, {
+			})
 		]);
 	}
 }

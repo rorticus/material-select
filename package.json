@@ -2,9 +2,9 @@
   "name": "material-select",
   "version": "1.0.0",
   "dependencies": {
-    "@dojo/framework": "4.0.2",
-    "@dojo/widgets": "^4.0.0",
-    "@material/select": "^0.41.0",
+    "@dojo/framework": "^4.0.2",
+    "@dojo/widgets": "^4.0.1",
+    "@material/select": "^0.43.0",
     "cldrjs": "~0.4.6",
     "tslib": "~1.8.1"
   },
