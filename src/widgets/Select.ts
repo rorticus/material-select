@@ -95,14 +95,14 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 
 	// native select events
 	private _onNativeChange(event: Event) {
-		const { options = [], onValue } = this.properties;
+		const { options = [] } = this.properties;
 		event.stopPropagation();
 		const value = (<HTMLInputElement>event.target).value;
 		const option = find(
 			options,
 			(option: SelectOption) => option.value === value
 		);
-		option && onValue && onValue(option.value || '');
+		option && this.selectOption(option);
 	}
 
 	protected renderNativeSelect(): DNode[] {
@@ -162,6 +162,12 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		];
 	}
 
+	protected selectOption(option: SelectOption) {
+		const { onValue } = this.properties;
+
+		onValue && onValue(option.value || '');
+	}
+
 	protected renderEnhancedSelect(isFocused: boolean): DNode[] {
 		const {
 			options = [],
@@ -169,8 +175,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		} = this.properties;
 
 		const [option] = options.filter(o => o.value === value);
-
-		console.log(isFocused);
+		const activeIndex = options.map(o => o.value).indexOf(value);
 
 		return [
 			v('div', {
@@ -191,7 +196,9 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 						getOptionId: (option: SelectOption) => option.value || '',
 						getOptionLabel: (option: SelectOption) => option.label || option.value,
 						getOptionSelected: (option: SelectOption) => value === option.value,
-						optionData: options
+						onOptionSelect: (option: SelectOption) => this.selectOption(option),
+						optionData: options,
+						activeIndex: activeIndex < 0 ? undefined : activeIndex
 					})
 				])
 		];
