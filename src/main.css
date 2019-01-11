@@ -8,3 +8,11 @@ body {
 	flex-direction: row;
 	align-items: center;
 }
+
+.columns {
+	display: flex;
+	align-items: flex-start;
+}
+
+.column {
+}

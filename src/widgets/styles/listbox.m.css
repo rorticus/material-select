@@ -1,17 +1,14 @@
 @import './variables.css';
 
 .root {
-	border: 1px solid var(--component-color);
-	background: var(--component-background);
-	max-height: 400px;
-	overflow-y: auto;
-	position: relative;
+	composes: mdc-list from '@material/list/dist/mdc.list.css';
 }
 
 .focused {}
 
 .option {
 	cursor: pointer;
+	composes: mdc-list-item from '@material/list/dist/mdc.list.css';
 }
 
 .focused .activeOption,

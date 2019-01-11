@@ -5,6 +5,8 @@
     "@dojo/framework": "^4.0.2",
     "@dojo/widgets": "^4.0.1",
     "@material/select": "^0.43.0",
+    "@material/menu": "^0.43.0",
+    "@material/list": "^0.43.0",
     "cldrjs": "~0.4.6",
     "tslib": "~1.8.1"
   },

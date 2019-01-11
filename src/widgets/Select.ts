@@ -20,6 +20,7 @@ import {
 	LabeledProperties
 } from '@dojo/widgets/common/interfaces';
 import Label from '@dojo/widgets/label/index';
+import Listbox from './Listbox';
 import * as css from './styles/select.m.css';
 import { customElement } from '@dojo/framework/widget-core/decorators/customElement';
 
@@ -52,6 +53,7 @@ export interface SelectProperties
 	required?: boolean;
 	widgetId?: string;
 	value?: string;
+	enhanced?: boolean;
 
 	onBlur?(preventDefault: () => void): void;
 	onFocus?(preventDefault: () => void): void;
@@ -70,7 +72,8 @@ export interface SelectProperties
 		'readOnly',
 		'required',
 		'invalid',
-		'disabled'
+		'disabled',
+		'enhanced'
 	],
 	attributes: ['widgetId', 'label', 'value'],
 	events: ['onBlur', 'onFocus']
@@ -159,6 +162,41 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		];
 	}
 
+	protected renderEnhancedSelect(isFocused: boolean): DNode[] {
+		const {
+			options = [],
+			value
+		} = this.properties;
+
+		const [option] = options.filter(o => o.value === value);
+
+		console.log(isFocused);
+
+		return [
+			v('div', {
+				classes: this.theme(css.selectedText),
+				tabIndex: 0
+			}, [
+				option ? option.label : null
+			]),
+			v('div', {
+					classes: this.theme([
+						css.menu,
+						isFocused ? css.menuOpen : null
+					])
+				},
+				[
+					w(Listbox, {
+						getOptionDisabled: (option: SelectOption) => option.disabled || false,
+						getOptionId: (option: SelectOption) => option.value || '',
+						getOptionLabel: (option: SelectOption) => option.label || option.value,
+						getOptionSelected: (option: SelectOption) => value === option.value,
+						optionData: options
+					})
+				])
+		];
+	}
+
 	protected render(): DNode {
 		const {
 			label,
@@ -168,7 +206,8 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			readOnly,
 			required,
 			theme,
-			value
+			value,
+			enhanced = false
 		} = this.properties;
 		const focus = this.meta(Focus).get('root');
 
@@ -182,7 +221,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 
 		const children = [
 			v('span', { classes: this.theme(css.arrow) }, []),
-			...this.renderNativeSelect(),
+			...enhanced ? this.renderEnhancedSelect(focus.containsFocus) : this.renderNativeSelect(),
 			label
 				? w(
 				Label,

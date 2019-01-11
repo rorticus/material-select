@@ -2,6 +2,7 @@
 
 .root {
 	composes: mdc-select from '@material/select/dist/mdc.select.css';
+	overflow: visible;
 }
 
 .hasLeading {
@@ -37,4 +38,28 @@
 }
 .selectInvalid {
 	composes: mdc-select--invalid from '@material/select/dist/mdc.select.css';
+}
+
+.menu {
+	composes: mdc-select__menu from '@material/select/dist/mdc.select.css';
+	composes: mdc-menu from '@material/menu/dist/mdc.menu.css';
+	composes: mdc-menu-surface from '@material/menu/dist/mdc.menu.css';
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+}
+
+.menuOpen {
+	composes: mdc-menu-surface--open from '@material/menu/dist/mdc.menu.css';
+	display: inline-block;
+}
+
+.enhancedFocused {
+	composes: mdc-select--focused from '@material/select/dist/mdc.select.css';
+}
+
+.selectedText {
+	composes: mdc-select__selected-text from '@material/select/dist/mdc.select.css';
 }
