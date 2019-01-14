@@ -80,11 +80,27 @@ export interface SelectProperties
 })
 export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties> {
 	private _baseId = uuid();
+	private _open = false;
+	private _didContainFocus = false;
+
+	protected open() {
+		this._open = true;
+		this.invalidate();
+	}
+
+	protected close() {
+		this._open = false;
+		this.invalidate();
+	}
 
 	private _onBlur(event?: Event) {
 		this.properties.onBlur && this.properties.onBlur(() => {
 			event && event.preventDefault();
 		});
+
+		if (this._open) {
+			this.close();
+		}
 	}
 
 	private _onFocus(event?: Event) {
@@ -102,7 +118,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			options,
 			(option: SelectOption) => option.value === value
 		);
-		option && this.selectOption(option);
+		option && this.enhancedSelectOption(option);
 	}
 
 	protected renderNativeSelect(): DNode[] {
@@ -136,9 +152,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 					'aria-readonly': readOnly ? 'true' : null,
 					required,
 					value,
-					onblur: this._onBlur,
-					onchange: this._onNativeChange,
-					onfocus: this._onFocus
+					onchange: this._onNativeChange
 				},
 				[
 					v('option', {
@@ -162,13 +176,19 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		];
 	}
 
-	protected selectOption(option: SelectOption) {
+	protected enhancedSelectOption(option: SelectOption) {
 		const { onValue } = this.properties;
 
 		onValue && onValue(option.value || '');
+
+		this.close();
 	}
 
-	protected renderEnhancedSelect(isFocused: boolean): DNode[] {
+	protected enhancedClick() {
+		this.open();
+	}
+
+	protected renderEnhancedSelect(): DNode[] {
 		const {
 			options = [],
 			value
@@ -179,14 +199,15 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		return [
 			v('div', {
 				classes: this.theme(css.selectedText),
-				tabIndex: 0
+				tabIndex: 0,
+				onclick: this.enhancedClick
 			}, [
 				option ? option.label : null
 			])
 		];
 	}
 
-	protected renderEnhancedDropdown(containsFocus: boolean) {
+	protected renderEnhancedDropdown() {
 		const {
 			options = [],
 			value
@@ -197,7 +218,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		return v('div', {
 			classes: this.theme([
 				css.menu,
-				containsFocus ? css.menuOpen : null
+				this._open ? css.menuOpen : null
 			])
 		}, [
 			w(Listbox, {
@@ -205,7 +226,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				getOptionId: (option: SelectOption) => option.value || '',
 				getOptionLabel: (option: SelectOption) => option.label || option.value,
 				getOptionSelected: (option: SelectOption) => value === option.value,
-				onOptionSelect: (option: SelectOption) => this.selectOption(option),
+				onOptionSelect: (option: SelectOption) => this.enhancedSelectOption(option),
 				optionData: options,
 				activeIndex: activeIndex < 0 ? undefined : activeIndex
 			})
@@ -224,9 +245,20 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			value,
 			enhanced = false
 		} = this.properties;
-		const focus = this.meta(Focus).get('root');
+		const { containsFocus } = this.meta(Focus).get('root');
 
-		const hasValue = focus.containsFocus || Boolean(value);
+		if (containsFocus && !this._didContainFocus) {
+			// was just focused
+			this._onFocus();
+		}
+		else if (!containsFocus && this._didContainFocus) {
+			// was just blurred
+			this._onBlur();
+		}
+
+		this._didContainFocus = containsFocus;
+
+		const hasValue = containsFocus || Boolean(value);
 
 		const selectContainerClasses = [
 			css.selectContainer,
@@ -244,7 +276,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 					classes: this.theme(selectContainerClasses)
 				}, [
 					v('span', { classes: this.theme(css.arrow) }, []),
-					...enhanced ? this.renderEnhancedSelect(focus.containsFocus) : this.renderNativeSelect(),
+					...enhanced ? this.renderEnhancedSelect() : this.renderNativeSelect(),
 					label
 						? w(
 						Label,
@@ -252,7 +284,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 							extraClasses: { root: `${this.theme(css.label)} ${this.theme(hasValue ? css.labelHasValue : null)}` },
 							theme,
 							disabled,
-							focused: focus.containsFocus,
+							focused: containsFocus,
 							invalid,
 							readOnly,
 							required,
@@ -262,7 +294,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 						)
 						: null
 				]),
-			enhanced ? this.renderEnhancedDropdown(focus.containsFocus) : null
+			enhanced ? this.renderEnhancedDropdown() : null
 		]);
 	}
 }
