@@ -43,8 +43,7 @@
 .menu {
 	composes: mdc-select__menu from '@material/select/dist/mdc.select.css';
 	composes: mdc-menu from '@material/menu/dist/mdc.menu.css';
-	composes: mdc-menu-surface from '@material/menu/dist/mdc.menu.css';
-	display: none;
+	composes: mdc-menu-surface from '@material/menu-surface/dist/mdc.menu-surface.css';
 	position: absolute;
 	top: 100%;
 	left: 0;
@@ -52,8 +51,7 @@
 }
 
 .menuOpen {
-	composes: mdc-menu-surface--open from '@material/menu/dist/mdc.menu.css';
-	display: inline-block;
+	composes: mdc-menu-surface--open from '@material/menu-surface/dist/mdc.menu-surface.css';
 }
 
 .enhancedFocused {

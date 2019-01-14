@@ -21,6 +21,5 @@
 	cursor: default;
 }
 .selectedOption {
-	background-color: var(--selected-background);
-	color: var(--selected-color);
+	composes: mdc-list-item--selected from '@material/list/dist/mdc.list.css';
 }
