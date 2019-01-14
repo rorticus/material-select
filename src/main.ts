@@ -18,7 +18,8 @@ const options = [
 	},
 	{
 		label: 'Broccoli',
-		value: 'broccoli'
+		value: 'broccoli',
+		disabled: true
 	},
 	{
 		label: 'Cows and Chickens',

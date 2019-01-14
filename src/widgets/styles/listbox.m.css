@@ -17,8 +17,7 @@
 	outline: 4px auto var(--selected-background);
 }
 .disabledOption {
-	background-color: var(--disabled-color);
-	cursor: default;
+	composes: mdc-list-item--disabled from '@material/list/dist/mdc.list.css';
 }
 .selectedOption {
 	composes: mdc-list-item--selected from '@material/list/dist/mdc.list.css';

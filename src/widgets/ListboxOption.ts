@@ -41,6 +41,7 @@ export class ListboxOptionBase<P extends ListboxOptionProperties = ListboxOption
 			'aria-selected': disabled ? null : String(selected),
 			classes: this.theme(css),
 			id,
+			disabled: disabled,
 			role: 'option',
 			onclick: this._onClick
 		}, [ label ]);
