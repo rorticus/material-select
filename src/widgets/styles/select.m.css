@@ -57,7 +57,7 @@
 	composes: mdc-menu-surface--open from '@material/menu-surface/dist/mdc.menu-surface.css';
 }
 
-.enhancedFocused {
+.focused {
 	composes: mdc-select--focused from '@material/select/dist/mdc.select.css';
 }
 

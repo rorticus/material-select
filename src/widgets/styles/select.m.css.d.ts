@@ -11,5 +11,5 @@ export const invalid: string;
 export const selectInvalid: string;
 export const menu: string;
 export const menuOpen: string;
-export const enhancedFocused: string;
+export const focused: string;
 export const selectedText: string;

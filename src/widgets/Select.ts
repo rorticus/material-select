@@ -305,7 +305,8 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		const selectContainerClasses = [
 			css.selectContainer,
 			disabled ? css.disabled : null,
-			invalid ? css.invalid : null
+			invalid ? css.invalid : null,
+			containsFocus ? css.focused : null
 		];
 
 		return v('div', {
