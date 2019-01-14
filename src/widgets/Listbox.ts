@@ -1,3 +1,4 @@
+import customElement from '@dojo/framework/widget-core/decorators/customElement';
 import { auto, reference } from '@dojo/framework/widget-core/diff';
 import { diffProperty } from '@dojo/framework/widget-core/decorators/diffProperty';
 import Dimensions from '@dojo/framework/widget-core/meta/Dimensions';
@@ -65,6 +66,29 @@ export const ThemedBase = ThemedMixin(FocusMixin(WidgetBase));
 
 @theme(css)
 @diffProperty('optionData', reference)
+@customElement<ListboxProperties>({
+	tag: 'dojo-listbox',
+	properties: [
+		'theme',
+		'activeIndex',
+		'multiselect',
+		'tabIndex',
+		'visualFocus',
+		'optionData',
+		'getOptionDisabled',
+		'getOptionId',
+		'getOptionLabel',
+		'getOptionSelected'
+	],
+	attributes: [
+		'widgetId'
+	],
+	events: [
+		'onActiveIndexChange',
+		'onKeyDown',
+		'onOptionSelect'
+	]
+})
 export class ListboxBase<P extends ListboxProperties = ListboxProperties> extends ThemedBase<P, null> {
 	private _boundRenderOption = this.renderOption.bind(this);
 	private _idBase = uuid();
