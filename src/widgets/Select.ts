@@ -14,7 +14,7 @@ import Focus from '@dojo/framework/widget-core/meta/Focus';
 import { v, w } from '@dojo/framework/widget-core/d';
 import { uuid } from '@dojo/framework/core/util';
 import { find } from '@dojo/framework/shim/array';
-import { formatAriaProperties } from '@dojo/widgets/common/util';
+import { formatAriaProperties, Keys } from '@dojo/widgets/common/util';
 import {
 	CustomAriaProperties,
 	LabeledProperties
@@ -82,9 +82,19 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 	private _baseId = uuid();
 	private _open = false;
 	private _didContainFocus = false;
+	private _focusIndex = 0;
+	private _shouldFocusList = false;
 
-	protected open() {
+	protected open(activeIndex?: number) {
+
+		if (typeof activeIndex === 'undefined') {
+			const { options = [], value } = this.properties;
+			activeIndex = options.map(o => o.value).indexOf(value);
+		}
+
+		this._focusIndex = activeIndex;
 		this._open = true;
+		this._shouldFocusList = true;
 		this.invalidate();
 	}
 
@@ -185,7 +195,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		this.close();
 	}
 
-	protected enhancedClick() {
+	protected onEnhancedClick() {
 		this.open();
 	}
 
@@ -202,7 +212,8 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				key: 'select',
 				classes: this.theme(css.selectedText),
 				tabIndex: 0,
-				onclick: this.enhancedClick
+				onclick: this.onEnhancedClick,
+				onkeydown: this.onEnhancedKeyDown
 			}, [
 				option ? option.label : null
 			])
@@ -215,7 +226,9 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			value
 		} = this.properties;
 
-		const activeIndex = options.map(o => o.value).indexOf(value);
+		const focus = this._shouldFocusList;
+
+		this._shouldFocusList = false;
 
 		return v('div', {
 			classes: this.theme([
@@ -229,10 +242,37 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				getOptionLabel: (option: SelectOption) => option.label || option.value,
 				getOptionSelected: (option: SelectOption) => value === option.value,
 				onOptionSelect: (option: SelectOption) => this.enhancedSelectOption(option),
+				onActiveIndexChange: this.onEnhancedActiveIndexChanged,
 				optionData: options,
-				activeIndex: activeIndex < 0 ? undefined : activeIndex
+				activeIndex: this._focusIndex < 0 ? undefined : this._focusIndex,
+				tabIndex: this._open ? 0 : -1,
+				focus: focus ? () => true : () => false,
+				onKeyDown: this.onEnhancedKeyDown
 			})
 		]);
+	}
+
+	protected onEnhancedActiveIndexChanged(index: number) {
+		this._focusIndex = index;
+		this.invalidate();
+	}
+
+	protected onEnhancedKeyDown(event: KeyboardEvent) {
+		event.stopPropagation();
+
+		if (!this._open) {
+			if (event.which === Keys.Down) {
+				this.open();
+			}
+			else if (event.which === Keys.Space) {
+				this.open();
+			}
+		}
+		else {
+			if (event.which === Keys.Space || event.which === Keys.Escape) {
+				this.close();
+			}
+		}
 	}
 
 	protected render(): DNode {
