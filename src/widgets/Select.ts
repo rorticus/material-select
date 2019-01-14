@@ -138,6 +138,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			v(
 				'select',
 				{
+					key: 'select',
 					...formatAriaProperties(aria),
 					classes: this.theme([
 						css.input,
@@ -198,6 +199,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 
 		return [
 			v('div', {
+				key: 'select',
 				classes: this.theme(css.selectedText),
 				tabIndex: 0,
 				onclick: this.enhancedClick
@@ -273,6 +275,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			v(
 				'div',
 				{
+					key: 'container',
 					classes: this.theme(selectContainerClasses)
 				}, [
 					v('span', { classes: this.theme(css.arrow) }, []),
@@ -281,6 +284,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 						? w(
 						Label,
 						{
+							key: 'label',
 							extraClasses: { root: `${this.theme(css.label)} ${this.theme(hasValue ? css.labelHasValue : null)}` },
 							theme,
 							disabled,
