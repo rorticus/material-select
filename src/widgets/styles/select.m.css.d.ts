@@ -1,4 +1,5 @@
 export const root: string;
+export const selectContainer: string;
 export const hasLeading: string;
 export const leading: string;
 export const label: string;

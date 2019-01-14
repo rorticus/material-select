@@ -175,7 +175,6 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 		} = this.properties;
 
 		const [option] = options.filter(o => o.value === value);
-		const activeIndex = options.map(o => o.value).indexOf(value);
 
 		return [
 			v('div', {
@@ -183,25 +182,34 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				tabIndex: 0
 			}, [
 				option ? option.label : null
-			]),
-			v('div', {
-					classes: this.theme([
-						css.menu,
-						isFocused ? css.menuOpen : null
-					])
-				},
-				[
-					w(Listbox, {
-						getOptionDisabled: (option: SelectOption) => option.disabled || false,
-						getOptionId: (option: SelectOption) => option.value || '',
-						getOptionLabel: (option: SelectOption) => option.label || option.value,
-						getOptionSelected: (option: SelectOption) => value === option.value,
-						onOptionSelect: (option: SelectOption) => this.selectOption(option),
-						optionData: options,
-						activeIndex: activeIndex < 0 ? undefined : activeIndex
-					})
-				])
+			])
 		];
+	}
+
+	protected renderEnhancedDropdown(containsFocus: boolean) {
+		const {
+			options = [],
+			value
+		} = this.properties;
+
+		const activeIndex = options.map(o => o.value).indexOf(value);
+
+		return v('div', {
+			classes: this.theme([
+				css.menu,
+				containsFocus ? css.menuOpen : null
+			])
+		}, [
+			w(Listbox, {
+				getOptionDisabled: (option: SelectOption) => option.disabled || false,
+				getOptionId: (option: SelectOption) => option.value || '',
+				getOptionLabel: (option: SelectOption) => option.label || option.value,
+				getOptionSelected: (option: SelectOption) => value === option.value,
+				onOptionSelect: (option: SelectOption) => this.selectOption(option),
+				optionData: options,
+				activeIndex: activeIndex < 0 ? undefined : activeIndex
+			})
+		]);
 	}
 
 	protected render(): DNode {
@@ -220,41 +228,42 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 
 		const hasValue = focus.containsFocus || Boolean(value);
 
-		const rootClasses = [
-			css.root,
+		const selectContainerClasses = [
+			css.selectContainer,
 			disabled ? css.disabled : null,
 			invalid ? css.invalid : null
 		];
 
-		const children = [
-			v('span', { classes: this.theme(css.arrow) }, []),
-			...enhanced ? this.renderEnhancedSelect(focus.containsFocus) : this.renderNativeSelect(),
-			label
-				? w(
-				Label,
+		return v('div', {
+			key: 'root',
+			classes: this.theme(css.root)
+		}, [
+			v(
+				'div',
 				{
-					extraClasses: { root: `${this.theme(css.label)} ${this.theme(hasValue ? css.labelHasValue : null)}` },
-					theme,
-					disabled,
-					focused: focus.containsFocus,
-					invalid,
-					readOnly,
-					required,
-					forId: widgetId
-				},
-				[label]
-				)
-				: null
-		];
-
-		return v(
-			'div',
-			{
-				key: 'root',
-				classes: this.theme(rootClasses)
-			},
-			children
-		);
+					classes: this.theme(selectContainerClasses)
+				}, [
+					v('span', { classes: this.theme(css.arrow) }, []),
+					...enhanced ? this.renderEnhancedSelect(focus.containsFocus) : this.renderNativeSelect(),
+					label
+						? w(
+						Label,
+						{
+							extraClasses: { root: `${this.theme(css.label)} ${this.theme(hasValue ? css.labelHasValue : null)}` },
+							theme,
+							disabled,
+							focused: focus.containsFocus,
+							invalid,
+							readOnly,
+							required,
+							forId: widgetId
+						},
+						[label]
+						)
+						: null
+				]),
+			enhanced ? this.renderEnhancedDropdown(focus.containsFocus) : null
+		]);
 	}
 }
 

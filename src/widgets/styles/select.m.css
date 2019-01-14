@@ -1,8 +1,11 @@
 @import "./variables.css";
 
 .root {
+	position: relative;
+}
+
+.selectContainer {
 	composes: mdc-select from '@material/select/dist/mdc.select.css';
-	overflow: visible;
 }
 
 .hasLeading {
