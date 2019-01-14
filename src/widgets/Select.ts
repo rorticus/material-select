@@ -202,7 +202,10 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 	protected renderEnhancedSelect(): DNode[] {
 		const {
 			options = [],
-			value
+			value,
+			aria = {},
+			required,
+			invalid
 		} = this.properties;
 
 		const [option] = options.filter(o => o.value === value);
@@ -213,7 +216,13 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 				classes: this.theme(css.selectedText),
 				tabIndex: 0,
 				onclick: this.onEnhancedClick,
-				onkeydown: this.onEnhancedKeyDown
+				onkeydown: this.onEnhancedKeyDown,
+				...formatAriaProperties(aria),
+				'aria-expanded': `${this._open}`,
+				'aria-haspopup': 'listbox',
+				'aria-required': required ? 'true' : null,
+				'aria-invalid': invalid ? 'true' : null,
+				'aria-controls': this._baseId
 			}, [
 				option ? option.label : null
 			])
@@ -223,7 +232,8 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 	protected renderEnhancedDropdown() {
 		const {
 			options = [],
-			value
+			value,
+			widgetId = this._baseId
 		} = this.properties;
 
 		const focus = this._shouldFocusList;
@@ -237,6 +247,7 @@ export class Select extends ThemedMixin(FocusMixin(WidgetBase))<SelectProperties
 			])
 		}, [
 			w(Listbox, {
+				widgetId,
 				getOptionDisabled: (option: SelectOption) => option.disabled || false,
 				getOptionId: (option: SelectOption) => option.value || '',
 				getOptionLabel: (option: SelectOption) => option.label || option.value,
